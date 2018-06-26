@@ -43,10 +43,10 @@ This is the place where the tarballs will be located.  Organized by year-month.
 
 example:
 
-    /mnt/san/backup/2018-07/backup.0.tgz   # tarball
-    /mnt/san/backup/2018-07/backup.0.snar  # backup index
-    /mnt/san/backup/2018-07/backup.1.tgz   # incremental tarball
-    /mnt/san/backup/2018-07/backup.1.snar  # incremental backup index
+    /mnt/san/backup/2018-07/backup_0.tgz   # full backup tarball
+    /mnt/san/backup/2018-07/backup_0.snar  # full backup backup index
+    /mnt/san/backup/2018-07/backup_1.tgz   # incremental tarball
+    /mnt/san/backup/2018-07/backup_1.snar  # incremental backup index
 
 
 This is organized so that each month there is a full backup, and every subsequent backup that month will be incremental
