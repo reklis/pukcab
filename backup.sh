@@ -3,20 +3,28 @@
 defaultconfig="${HOME}/.config/pukcab.conf"
 
 usage() {
-  echo "usage: $0 [-c config] [-v]"
+  echo
+  echo "usage: $0 [-c config] [-v] [-n]"
+  echo "  -c    path to non-default config file"
+  echo "  -v    verbose tarballing"
+  echo "  -n    do not unmount after backing up"
   echo
 }
 
 configfile="${defaultconfig}"
 verbose=""
+shouldunmount=true
 
-while getopts ":c:v" o; do
+while getopts ":c:vn" o; do
   case "${o}" in
     c)
       configfile=${OPTARG}
       ;;
     v)
       verbose="vv"
+      ;;
+    n)
+      shouldunmount=false
       ;;
     esac
 done
@@ -29,6 +37,7 @@ then
   echo
   echo example config:
   echo
+  echo mount /mnt/san
   echo target /mnt/san/backup
   echo source /home/user1
   echo source /etc
@@ -38,6 +47,14 @@ then
   echo default config location: ${defaultconfig}
   usage
   exit 1
+fi
+
+mount=`grep ^mount ${configfile} | sed 's/^mount //' | head -n 1`
+
+if [ -n "${mount}" ]
+then
+  echo "mounting ${mount}..."
+  sudo mount ${mount}
 fi
 
 sources=`grep ^source ${configfile} | sed 's/^source //' | xargs`
@@ -58,7 +75,7 @@ then
   excludes=""
 fi
 
-target=`grep ^target ${configfile} | sed 's/^target //' | head -1`
+target=`grep ^target ${configfile} | sed 's/^target //' | head -n 1`
 
 if [ "" = "${target}" ]
 then
@@ -73,6 +90,7 @@ datestamp=`date +'%Y-%m'`
 target=`grep ^target ${configfile} | sed 's/^target //' | head -1`
 target="${target}/${datestamp}"
 mkdir -p ${target}
+echo "backing up to ${target}..."
 
 lastindex=`ls -1 ${target}/*.snar 2>/dev/null | tail -n 1`
 nextindex=0
@@ -94,3 +112,12 @@ tar --ignore-failed-read \
   -f ${target}/${backupfile}.tgz ${sources}
 
 du -ah ${target}
+
+if [ -n "${mount}" ]
+then
+  if [ true = $shouldunmount ]
+  then
+    echo "unmounting ${mount}..."
+    sudo umount ${mount}
+  fi
+fi

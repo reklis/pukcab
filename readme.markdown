@@ -4,12 +4,17 @@ the simplest possible incremental linux backup and restore
 
 # usage
 
-    ./backup.sh [-c config] [-v]
+    usage: ./backup.sh [-c config] [-v] [-n]
+      -c    path to non-default config file
+      -v    verbose tarballing
+      -n    do not unmount after backing up
+
 
 # configuration example
 
 
     # ~/.config/pukcab.conf
+    mount /mnt/san
     target /mnt/san/backup
     source /home/user1
     source /etc
@@ -18,9 +23,15 @@ the simplest possible incremental linux backup and restore
 
 ## configuration items
 
+### mount
+
+Single value. Optional.
+
+Path to be mounted before backing up.  Will be unmounted unless `-n` is specified.
+
 ### target
 
-Single value.
+Single value. Required.
 
 This is the place where the tarballs will be located.  Organized by year-month.
 
