@@ -1,9 +1,31 @@
 #!/usr/bin/env bash
 
-configfile="${HOME}/.config/pukcab.conf"
+defaultconfig="${HOME}/.config/pukcab.conf"
 
 usage() {
-  echo "config file not found! ${configfile}"
+  echo "usage: $0 [-c config] [-v]"
+  echo
+}
+
+configfile="${defaultconfig}"
+verbose=""
+
+while getopts ":c:v" o; do
+  case "${o}" in
+    c)
+      configfile=${OPTARG}
+      ;;
+    v)
+      verbose="vv"
+      ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [ ! -f $configfile ]
+then
+  echo
+  echo "error: config file not found! ${configfile}"
   echo
   echo example config:
   echo
@@ -12,15 +34,40 @@ usage() {
   echo source /etc
   echo exclude /home/user1/.cache
   echo exclude /home/user1/Downloads
-}
-
-if [ ! -f $configfile ]
-then
+  echo
+  echo default config location: ${defaultconfig}
   usage
-  exit
+  exit 1
+fi
+
+sources=`grep ^source ${configfile} | sed 's/^source //' | xargs`
+
+if [ "" = "${sources}" ]
+then
+  echo
+  echo "error: $configfile missing source entries"
+  echo
+  usage
+  exit 1
+fi
+
+excludes=`grep ^exclude ${configfile} | sed 's/^exclude //' | xargs printf " --exclude %s"`
+
+if [ " --exclude " = "${excludes}" ]
+then
+  excludes=""
 fi
 
 target=`grep ^target ${configfile} | sed 's/^target //' | head -1`
+
+if [ "" = "${target}" ]
+then
+  echo
+  echo "error: $configfile missing target entry"
+  echo
+  usage
+  exit 1
+fi
 
 datestamp=`date +'%Y-%m'`
 target=`grep ^target ${configfile} | sed 's/^target //' | head -1`
@@ -37,15 +84,13 @@ then
   cp ${target}/backup_${lastindex}.snar ${target}/backup_${nextindex}.snar
 fi
 
-sources=`grep ^source ${configfile} | sed 's/^source //' | xargs`
-excludes=`grep ^exclude ${configfile} | sed 's/^exclude //' | xargs printf " --exclude %s"`
-
 backupfile="backup_${nextindex}"
 
 tar --ignore-failed-read \
   --no-check-device \
   --listed-incremental=${target}/${backupfile}.snar \
   ${excludes} \
-  -czpvvf ${target}/${backupfile}.tgz ${sources}
+  -czp${verbose} \
+  -f ${target}/${backupfile}.tgz ${sources}
 
 du -ah ${target}

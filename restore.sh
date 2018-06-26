@@ -10,13 +10,13 @@ usage() {
 if [ "${backupsource}" == "" ]
 then
   usage
-  exit
+  exit 1
 fi
 
 if [ "${restorepath}" == "" ]
 then
   usage
-  exit
+  exit 1
 fi
 
 for tarball in `ls ${backupsource}/*.tgz`

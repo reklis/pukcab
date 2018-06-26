@@ -1,7 +1,10 @@
 # pukcab
 
-the simplest possible linux backup and restore
+the simplest possible incremental linux backup and restore
 
+# usage
+
+    ./backup.sh [-c config] [-v]
 
 # configuration example
 
@@ -41,6 +44,9 @@ Stuff to copy into the tarball.  Files or directories.
 
 ### exclude
 
+Multiple values.
+
 Stuff to skip when backing up.  Files or directories.
 
+This is a straight passthrough to tar, so file globbing is supported.
 
