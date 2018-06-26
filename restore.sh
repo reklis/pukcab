@@ -3,21 +3,19 @@
 backupsource=$1
 restorepath=$2
 
-
-function usage() {
+usage() {
   echo "usage: $0 <backup source folder> <restore destination>"
-  echo "restore destination"
 }
 
 if [ "${backupsource}" == "" ]
 then
-  usage()
+  usage
   exit
 fi
 
 if [ "${restorepath}" == "" ]
 then
-  usage()
+  usage
   exit
 fi
 

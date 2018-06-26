@@ -2,8 +2,7 @@
 
 configfile="${HOME}/.config/pukcab.conf"
 
-if [ ! -f $configfile ]
-then
+usage() {
   echo "config file not found! ${configfile}"
   echo
   echo example config:
@@ -13,9 +12,15 @@ then
   echo source /etc
   echo exclude /home/user1/.cache
   echo exclude /home/user1/Downloads
-  echo
+}
+
+if [ ! -f $configfile ]
+then
+  usage
   exit
 fi
+
+target=`grep ^target ${configfile} | sed 's/^target //' | head -1`
 
 datestamp=`date +'%Y-%m'`
 target=`grep ^target ${configfile} | sed 's/^target //' | head -1`
