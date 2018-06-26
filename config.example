@@ -1,0 +1,10 @@
+# ~/.config/pukcab.conf
+
+target /mnt/san/backup
+
+source /home/user1
+source /etc
+
+exclude /home/user1/.cache
+exclude /home/user1/Downloads
+
