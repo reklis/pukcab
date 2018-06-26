@@ -9,9 +9,15 @@ the simplest possible incremental linux backup and restore
       -v    verbose tarballing
       -n    do not unmount after backing up
 
+    usage: ./restore.sh [-c configfile] [-v] [-s source] [-d destination] [-l level]
+      -c    path to non-default config file
+      -v    verbose tarball extraction
+      -s    source of backup, default is to read target from config
+      -d    destination of restore, default is ./restore
+      -l    number of incremental backup, default is latest
+
 
 # configuration example
-
 
     # ~/.config/pukcab.conf
     mount /mnt/san
