@@ -1,5 +1,7 @@
 # ~/.config/pukcab.conf
 
+mount /mnt/san
+
 target /mnt/san/backup
 
 source /home/user1
